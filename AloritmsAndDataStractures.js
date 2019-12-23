@@ -879,3 +879,122 @@ class Stack {
     return result
   }
 }
+
+/*
+BINARY SEARCH TREE:
+insertion O(log N)
+search O(log N)
+*/
+
+class NodeBST {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinarySearchTree {
+  constructor() {
+    this.root = null;
+  }
+
+  insert(val, current = this.root) {
+    let newNode = new NodeBST(val);
+
+    if (!this.root) {
+      this.root = newNode;
+      return this
+    } else {
+      if (current.value < val) {
+        if (current.right) {
+          current = current.right
+          return this.insert(val, current)
+        } else {
+          current.right = newNode;
+          return this
+        }
+      } else {
+        if (current.left) {
+          current = current.left
+          return this.insert(val, current)
+        } else {
+          current.left = newNode;
+          return this
+        }
+      }
+    }
+  }
+
+  find(val, current = this.root) {
+    if (!this.root) return undefined;
+
+    if (current.value === val) return current
+
+    if (current.value > val) {
+      if (current.left) {
+        current = current.left
+        return this.find(val, current)
+      } else {
+        return undefined
+
+      }
+    } else {
+      if (current.right) {
+        current = current.right
+        return this.find(val, current)
+      } else {
+        return undefined
+      }
+    }
+  }
+
+  BreadthFirstSearch() {
+    let queue = [this.root];
+    let result = []
+
+    while (queue.length) {
+      let dequeued = queue.shift();
+      result.push(dequeued.value);
+      if (dequeued.left) queue.push(dequeued.left);
+      if (dequeued.right) queue.push(dequeued.right);
+    }
+    return result
+  }
+
+  DFSPreoder() {
+    let result = [];
+
+    const traverse = (node) => {
+      result.push(node.value);
+      if (node.left) traverse(node.left);
+      if (node.right) traverse(node.right)
+    }
+    traverse(this.root)
+    return result
+  }
+
+  DFSPostorder() {
+    let result = [];
+
+    const traverse = (node) => {
+      if (node.left) traverse(node.left);
+      if (node.right) traverse(node.right)
+      result.push(node.value);
+    }
+    traverse(this.root)
+    return result
+  }
+
+  DFSInoder() {
+    let result = [];
+
+    const traverse = (node) => {
+      if (node.left) traverse(node.left);
+      result.push(node.value);
+      if (node.right) traverse(node.right)
+    }
+    traverse(this.root)
+    return result
+  }
+}
