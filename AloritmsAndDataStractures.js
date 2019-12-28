@@ -899,32 +899,35 @@ class BinarySearchTree {
     this.root = null;
   }
 
-  insert(val, current = this.root) {
-    let newNode = new NodeBST(val);
+  insert(value, current = this.root) {
+    let newNode = new NodeBST(value);
 
     if (!this.root) {
       this.root = newNode;
       return this
-    } else {
-      if (current.value < val) {
-        if (current.right) {
-          current = current.right
-          return this.insert(val, current)
-        } else {
-          current.right = newNode;
-          return this
-        }
+    }
+
+    if (current.value > value) {
+      if (current.left) {
+        current = current.left
+        return this.insert(value, current)
       } else {
-        if (current.left) {
-          current = current.left
-          return this.insert(val, current)
-        } else {
-          current.left = newNode;
-          return this
-        }
+        current.left = newNode;
+        return this
+
+      }
+    } else {
+      if (current.right) {
+        current = current.right
+        return this.insert(value, current)
+      } else {
+        current.right = newNode;
+        return this
       }
     }
+
   }
+
 
   find(val, current = this.root) {
     if (!this.root) return undefined;
@@ -947,6 +950,47 @@ class BinarySearchTree {
         return undefined
       }
     }
+  }
+
+  remove(value) {
+    const removeNode = (node, value) => {
+      if (!node) {
+        return null;
+      }
+
+      if (value == node.value) {
+        if (!node.left && !node.right) {
+          return null;
+        }
+
+        if (!node.left) {
+          return node.right;
+        }
+
+        if (!node.right) {
+          return node.left;
+        }
+
+        let temp = node.right;
+
+        while (!temp.left) {
+          temp = temp.left;
+        }
+
+        node.value = temp.value;
+
+        node.right = removeNode(node.right, temp.value);
+
+      } else if (value < node.value) {
+        node.left = removeNode(node.left, value);
+        return node;
+
+      } else {
+        node.right = removeNode(node.right, value);
+        return node;
+      }
+    }
+    this.root = removeNode(this.root, value)
   }
 
   BreadthFirstSearch() {
