@@ -1041,4 +1041,55 @@ class BinarySearchTree {
     traverse(this.root)
     return result
   }
+
+  findSecondMostNode() {
+    if (!this.root) return undefined;
+
+    let secondMax;
+    let curr = this.root;
+    let prev = null;
+
+    while (curr.right !== null) {
+      prev = curr;
+      curr = curr.right;
+    }
+
+    if (curr.left !== null) {
+      curr = curr.left;
+
+      while (curr.right !== null) {
+        curr = curr.right;
+        secondMax = curr.value
+      }
+    } else {
+      if (curr === this.root && prev === null) {
+        secondMax = undefined
+      } else {
+        secondMax = prev.value
+      }
+    }
+    return secondMax
+  }
+
+
+  isBalanced() {
+    const getHeight = (node) => {
+      if (!node) return 0;
+      return Math.max(getHeight(node.left), getHeight(node.right)) + 1;
+    }
+
+    const helper = (root) => {
+      if (!root) return true;
+      // For a given node we will get the height of its left and right sub tree.
+      let heightDifference = Math.abs(getHeight(root.left) - getHeight(root.right));
+
+      //If the height difference is greater than one then we will return false. We will repeat this process for each of the node in the tree using recursion.
+      if (heightDifference > 1) {
+        return false;
+      } else {
+        return helper(root.left) && helper(root.right);
+      }
+    }
+    return helper(this.root)
+  }
 }
