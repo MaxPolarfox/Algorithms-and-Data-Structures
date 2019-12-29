@@ -1114,9 +1114,8 @@ class MaxBinaryHeap {
     let parentInd = Math.floor((currInd - 1) / 2)
 
     while (val > this.values[parentInd]) {
-      let temp = this.values[parentInd];
+      this.values[currInd] = this.values[parentInd]
       this.values[parentInd] = val;
-      this.values[currInd] = temp
 
       currInd = parentInd;
       parentInd = Math.floor((currInd - 1) / 2)
@@ -1132,7 +1131,6 @@ class MaxBinaryHeap {
       this.values[0] = last;
       this.sinkDown();
     }
-
     return removed
   }
 
@@ -1169,6 +1167,84 @@ class MaxBinaryHeap {
       ind = swap
     }
   }
+
+  heapSort() {
+    let k = this.values.length - 1;
+    let sorted = [];
+
+    while (k > 0) {
+      sorted.push(this.extractMax())
+    }
+    this.values = sorted.reverse();
+    return this;
+  }
+
+  heapifyMax() {
+    const heapify = (arr, length, i) => {
+      let largest = i;
+      let left = i * 2 + 1;
+      let right = i * 2 + 2;
+
+      if (left < length && arr[left] > arr[largest]) largest = left;
+
+      if (right < length && arr[right] > arr[largest]) largest = right;
+
+      if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest, arr[i]]];
+
+        heapify(arr, length, largest);
+      }
+      return arr;
+    }
+
+    let length = this.values.length;
+    let parentInd = Math.floor(length / 2 - 1);
+
+    while (parentInd > 0) {
+      heapify(this.values, length, parentInd);
+      parentInd--;
+    }
+    return this;
+  }
+}
+
+
+/*
+maxHeapify compares three elements (a parent and two children) and makes sure that they are in the correct order for a max heap. This function is going to take in three arguments: the array, the length of the array that we want to build our heap from, and the index of the parent that we are heapifying.
+*/
+const heapify = (arr, length, i) => {
+  let largest = i;
+  let left = i * 2 + 1;
+  let right = i * 2 + 2;
+
+  if (left < length && arr[left] > arr[largest]) largest = left;
+
+  if (right < length && arr[right] > arr[largest]) largest = right;
+
+  if (largest !== i) {
+    [arr[i], arr[largest]] = [arr[largest, arr[i]]];
+
+    heapify(arr, length, largest);
+  }
+  return arr;
+}
+
+const heapSort = (arr) => {
+  let length = arr.length;
+  let parentInd = Math.floor(length / 2 - 1);
+  let k = length - 1;
+
+  while (parentInd > 0) {
+    heapify(arr, length, parentInd);
+    parentInd--;
+  }
+
+  while (k > 0) {
+    [arr[0], arr[k]] = [arr[k], arr[0]]
+    heapify(arr, k, 0);
+    k--;
+  }
+  return arr;
 }
 
 
@@ -1189,6 +1265,7 @@ class PriorityQueue {
     this.values.push(newNode);
     this.bubbleUp();
   }
+
   bubbleUp() {
     let idx = this.values.length - 1;
     const element = this.values[idx];
@@ -1201,6 +1278,7 @@ class PriorityQueue {
       idx = parentIdx;
     }
   }
+
   dequeue() {
     const min = this.values[0];
     const end = this.values.pop();
@@ -1210,6 +1288,7 @@ class PriorityQueue {
     }
     return min;
   }
+
   sinkDown() {
     let idx = 0;
     const length = this.values.length;
