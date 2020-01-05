@@ -1321,3 +1321,180 @@ class PriorityQueue {
     }
   }
 }
+
+
+/*
+HASH TABLES
+*/
+
+class HashTable {
+  constructor(size = 10) {
+    this.keyMap = new Array(size)
+  }
+
+  _hash(key) {
+    let total = 0;
+    let PRIME = 31;
+    for (let i = 0; i < Math.min(key.length, 100); i++) {
+      let char = key[i];
+      let value = char.charCodeAt(0) - 96
+      total = (total * PRIME + value) % this.keyMap.length;
+    }
+    return total;
+  }
+
+  set(key, val) {
+    let index = this._hash(key);
+
+    if (!this.keyMap[index]) this.keyMap[index] = [];
+
+    this.keyMap[index].push([key, val])
+  }
+
+  get(key) {
+    let index = this._hash(key);
+
+    if (this.keyMap[index]) {
+      for (let hashedKey of this.keyMap[index]) {
+        if (hashedKey[0] === key) return hashedKey[1]
+      }
+      return undefined;
+    }
+  }
+
+  keys() {
+    let keys = [];
+    for (let bucket of this.keyMap) {
+      if (bucket) {
+        for (let val of bucket) {
+          if (!keys.includes(val[0])) {
+            keys.push(val[0])
+          }
+        }
+      }
+    }
+    return keys
+  }
+
+  values() {
+    let values = [];
+    for (let bucket of this.keyMap) {
+      if (bucket) {
+        for (let val of bucket) {
+          if (!values.includes(val[1])) {
+            values.push(val[1])
+          }
+        }
+      }
+    }
+    return values
+  }
+}
+
+
+/*
+GRAPH
+insertion:
+extraction:
+search
+*/
+
+class Graph {
+  constructor() {
+    this.adjacencyList = {}
+  }
+
+  addVertex(vertex) {
+    if (!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
+    else throw alert(`${vertex} already exists`)
+  }
+
+  addEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1].push(vertex2);
+    this.adjacencyList[vertex2].push(vertex1);
+  }
+
+  removeEdge(vertex1, vertex2) {
+    this.adjacencyList[vertex1] = this.adjacencyList[vertex1].filter(val => val !== vertex2);
+    this.adjacencyList[vertex2] = this.adjacencyList[vertex2].filter(val => val !== vertex1);
+  }
+
+  removeVertex(vertex) {
+    this.adjacencyList[vertex].forEach(val => this.removeEdge(val, vertex));
+    delete this.adjacencyList[vertex];
+  }
+
+  DFSRecursive(vertex) {
+    let result = [];
+    let visited = {};
+    const adjacencyList = this.adjacencyList;
+
+    const DFS = (v) => {
+      if (!v) return null;
+      visited[v] = true;
+      result.push(v)
+      adjacencyList[v].forEach(val => {
+        if (!visited[val]) return DFS(val)
+      })
+    }
+    DFS(vertex);
+
+    return result;
+  }
+
+  DFSIterative(start) {
+    const stack = [start];
+    const result = [];
+
+
+    visited[start] = true;
+    while (stack.length) {
+      currentVertex = stack.pop();
+      result.push(currentVertex);
+
+      this.adjacencyList[currentVertex].forEach(neighbor => {
+        if (!visited[neighbor]) {
+          visited[neighbor] = true;
+          stack.push(neighbor)
+        }
+      });
+    }
+    return result;
+  }
+
+  BFS(start) {
+    let queue = [start];
+    let visited = {};
+    let currentVertex;
+    let result = []
+    visited[start] = true;
+
+    while (queue.length) {
+      currentVertex = queue.shift();
+      result.push(currentVertex)
+
+      this.adjacencyList[currentVertex].forEach(val => {
+        if (!visited[val]) {
+          visited[val] = true;
+          queue.push(val);
+
+        }
+      })
+    }
+    return result
+  }
+
+  isCiclic(vertex, visited = {}, recStack = {}) {
+    if (!visited[vertex]) {
+      visited[vertex] = true;
+      recStack[vertex] = true;
+      this.adjacencyList[vertex].forEach(val => {
+        let currentVertex = val;
+        if (!visited[currentVertex] && this.isCiclic(currentVertex, visited, recStack)) return true;
+        else if (recStack[currentVertex]) return true
+      })
+    }
+    recStack[vertex] = false;
+    return false;
+  }
+}
