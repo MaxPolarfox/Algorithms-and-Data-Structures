@@ -213,19 +213,18 @@ Space: O(1)
 */
 const selectionSort = (arr) => {
   for (let i = 0; i < arr.length; i++) {
-    let smallest = i
+    let lowest = i;
     for (let j = i + 1; j < arr.length; j++) {
-
-      if (arr[smallest] > arr[j]) smallest = j;
-
-      if (j !== smallest) {
-        let small = arr[smallest];
-        arr[smallest] = arr[i];
-        arr[i] = small;
-      }
+      if (arr[j] < arr[lowest]) lowest = j;
+    }
+    if (i !== lowest) {
+      //SWAP!
+      let temp = arr[i];
+      arr[i] = arr[lowest];
+      arr[lowest] = temp;
     }
   }
-  return arr
+  return arr;
 }
 
 
@@ -1563,4 +1562,73 @@ class WeightedGraph {
     }
     return path.concat(smallest).reverse();
   }
+}
+
+
+// ALGO PROBLEMS:
+
+
+// Given a sorted Arr and a number, wright a function called sortedFrequency that countshe occurences of the number in the array O(log N)
+const binarySearch = (arr, left, right, target) => {
+  if (right < left) return -1;
+
+  let mid = left + Math.floor((right - left) / 2);
+
+  // If the element is present at the middle itself
+  if (arr[mid] === target) return mid;
+
+  // If element is smaller than mid, then it can only be present in left subarray
+  if (arr[mid] > target) return binarySearch(arr, left, mid - 1, target);
+
+  // Else the element can only be present in right subarray
+  return binarySearch(arr, mid + 1, right, target);
+}
+
+const sortedFrequency = (arr, target) => {
+  // find the taget number in the array
+  let ind = binarySearch(arr, 0, arr.length - 1, target);
+
+  // If element is not present
+  if (ind === -1) return -1;
+
+  // Count elements on left side.
+  let count = 1;
+  let left = ind - 1;
+  while (left >= 0 && arr[left] === target) {
+    count++;
+    left--;
+  }
+
+  // Count elements on right side.
+  let right = ind + 1;
+  while (right < arr.length && arr[right] === target) {
+    count++;
+    right++;
+  }
+
+  return count;
+}
+
+
+// Given an Arr of 1s and 0s which has all 1s first followed by all 0s, write a function called countZeroes, which returns the number of zeroes in Arr O(log N)
+const firstZero = (arr, low, high) => {
+  if (high >= low) {
+    // Check if mid element is first 0
+    let mid = low + Math.floor((high - low) / 2);
+
+    if ((mid === 0 || arr[mid - 1] === 1) && arr[mid] === 0)
+      return mid;
+
+    // If mid element is not 0
+    if (arr[mid] === 1) return firstZero(arr, (mid + 1), high);
+    // If mid element is 0, but not first 0
+    else return firstZero(arr, low, (mid - 1));
+  }
+  return -1;
+}
+
+const countZeroes = (arr) => {
+  let first = firstZero(arr, 0, arr.length - 1)
+
+  return first === -1 ? 0 : arr.length - first
 }
