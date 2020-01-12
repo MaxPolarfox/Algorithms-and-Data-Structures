@@ -213,19 +213,21 @@ Space: O(1)
 */
 const selectionSort = (arr) => {
   for (let i = 0; i < arr.length; i++) {
-    let lowest = i;
+    let smallest = i
     for (let j = i + 1; j < arr.length; j++) {
-      if (arr[j] < arr[lowest]) lowest = j;
-    }
-    if (i !== lowest) {
-      //SWAP!
-      let temp = arr[i];
-      arr[i] = arr[lowest];
-      arr[lowest] = temp;
+
+      if (arr[smallest] > arr[j]) smallest = j;
+
+      if (j !== smallest) {
+        let small = arr[smallest];
+        arr[smallest] = arr[i];
+        arr[i] = small;
+      }
     }
   }
-  return arr;
+  return arr
 }
+
 
 
 /*INSERTION SORT:
@@ -234,7 +236,7 @@ const selectionSort = (arr) => {
 */
 const insertionSort = (arr) => {
   for (let i = 1; i < arr.length; i++) {
-    let currentVal = arr[i]
+    let currentVal = arr[i];
 
     for (let j = i - 1; j >= 0; j--) {
       if (arr[j] > currentVal) {
@@ -1091,6 +1093,20 @@ class BinarySearchTree {
     }
     return helper(this.root)
   }
+
+  findClosestValueInBst(target, closest = Infinity) {
+    let currentNode = this.root;
+
+    while (currentNode !== null) {
+      if (Math.abs(target - closest) > Math.abs(target - currentNode.value)) {
+        closest = currentNode.value;
+      }
+      if (target < currentNode.value) currentNode = currentNode.left;
+      else if (target > currentNode.value) currentNode = currentNode.right;
+      else break;
+    }
+    return closest
+  }
 }
 
 
@@ -1324,6 +1340,9 @@ class PriorityQueue {
 
 /*
 HASH TABLES
+  insert: O(1)
+  deletrtion: O(1)
+  accsess: O(1)
 */
 
 class HashTable {
@@ -1389,7 +1408,6 @@ class HashTable {
     return values
   }
 }
-
 
 /*
 GRAPH
@@ -1663,7 +1681,7 @@ function findRotatedIndex(arr, target, left = 0, right = arr.length - 1) {
 
 
 //Given an unsorted array and a number n, find if there exists a pair of elements in the array whose difference is n.
-const findPair1 = (arr, n) => {
+const findPair = (arr, n) => {
   // Initialize positions of two elements
   arr.sort((a, b) => a - b)
   let i = 0;
@@ -1676,4 +1694,81 @@ const findPair1 = (arr, n) => {
     else i++;
   }
   return false;
+}
+
+
+// Find three largest numbers in the ARR:
+function findThreeLargestNumbers(arr) {
+  let result = [null, null, null];
+  for (let num of arr) {
+    updateLargest(result, num);
+  }
+  return result
+}
+
+function updateLargest(arr, num) {
+  if (!arr[2] || num > arr[2]) shiftAndUpdate(arr, num, 2);
+  else if (!arr[1] || num > arr[1]) shiftAndUpdate(arr, num, 1);
+  else if (!arr[0] || num > arr[0]) shiftAndUpdate(arr, num, 0);
+}
+
+function shiftAndUpdate(arr, num, idx) {
+  for (let i = 0; i <= idx; i++) {
+    if (i === idx) arr[i] = num;
+    else arr[i] = arr[i + 1]
+  }
+}
+
+
+// Find the indexes of 2 values in the array which sum gives a targetSum:
+function twoNumberSum(arr, targetSum) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  arr = arr.sort((a, b) => a - b)
+
+  while (left < right) {
+    let currentSum = arr[left] + arr[right]
+    if (currentSum === targetSum) return [arr[left], arr[right]];
+    if (currentSum < targetSum) left++;
+    else right--
+  }
+  return []
+}
+
+// Write a function that returns the sum of the numbers in the array and, if the value of the array is another array multiply the sum of that array values by depth of this array:
+function productSum(arr, depth = 1) {
+  let sum = 0;
+  for (let val of arr) {
+    if (Array.isArray(val)) {
+      sum += productSum(val, depth + 1)
+    } else {
+      sum += val;
+    }
+  }
+  return sum * depth
+}
+
+
+// Calculate waterArea
+function waterArea(blocks) {
+  const rightMaxes = [];
+  let rightMax = 0;
+  for (let i = blocks.length - 1; i >= 0; i--) {
+    rightMax = Math.max(rightMax, blocks[i]);
+    rightMaxes[i] = rightMax;
+  }
+
+  const leftMaxes = [];
+  let leftMax = 0;
+  for (let i = 0; i < blocks.length; i++) {
+    leftMax = Math.max(leftMax, blocks[i]);
+    leftMaxes[i] = leftMax;
+  }
+
+  return blocks.reduce((waterCollected, block, idx) => {
+    const leftMax = leftMaxes[idx];
+    const rightMax = rightMaxes[idx];
+    return waterCollected + Math.min(leftMax, rightMax) - block;
+  }, 0);
 }
