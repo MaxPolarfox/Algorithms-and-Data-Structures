@@ -1564,6 +1564,19 @@ class WeightedGraph {
   }
 }
 
+/*
+TRIE
+*/
+
+class Trie {
+  constructor() {
+    this.characters = {};
+    this.isWord = false;
+  }
+  addWord(word, index = 0) {
+  }
+}
+
 
 // ALGO PROBLEMS:
 
@@ -1631,4 +1644,36 @@ const countZeroes = (arr) => {
   let first = firstZero(arr, 0, arr.length - 1)
 
   return first === -1 ? 0 : arr.length - first
+}
+
+
+// Write a function called findRotatedIndex which accepts a rotated array of sorted numbers and an integer. The function should return the index of the integerin the array. If the value is not found, return -1
+function findRotatedIndex(arr, target, left = 0, right = arr.length - 1) {
+  if (right < left) return -1;
+
+  let mid = left + Math.floor((right - left) / 2);
+
+  if (arr[mid] === target) return mid;
+  if (arr[mid + 1] === target) return mid + 1;
+  if (arr[mid - 1] === target) return mid - 1;
+
+  if (arr[mid < target]) return findRotatedIndex(arr, target, left, right = mid - 1);
+  else return findRotatedIndex(arr, target, left = mid + 1, right);
+}
+
+
+//Given an unsorted array and a number n, find if there exists a pair of elements in the array whose difference is n.
+const findPair1 = (arr, n) => {
+  // Initialize positions of two elements
+  arr.sort((a, b) => a - b)
+  let i = 0;
+  let j = 1;
+
+  // Search for a pair
+  while (i < arr.length && j < arr.length) {
+    if (i != j && arr[j] - arr[i] === n) return true;
+    else if (arr[j] - arr[i] < n) j++;
+    else i++;
+  }
+  return false;
 }
