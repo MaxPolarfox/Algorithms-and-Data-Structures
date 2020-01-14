@@ -1772,3 +1772,58 @@ function waterArea(blocks) {
     return waterCollected + Math.min(leftMax, rightMax) - block;
   }, 0);
 }
+
+
+// Removed the Kth node from the end in a single LL:
+class LinkedList {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+function removeKthNodeFromEnd(head, k) {
+  let current = head;
+  let previous = head;
+  let removed;
+
+  for (let i = 0; i < k; i++) {
+    current = current.next
+  }
+
+  if (!current) {
+    removed = previous;
+    head.value = head.next.value;
+    head.next = head.next.next;
+    return removed
+  }
+
+  while (current.next) {
+    previous = previous.next;
+    current = current.next;
+  }
+
+  removed = previous.next;
+  previous.next = previous.next.next;
+  return removed
+}
+
+
+// Given an array of integers. Return the array of it's all possible premutations:
+function getPermutations(array) {
+  let result = [];
+  helper(array, [], result)
+  return result
+}
+
+function helper(arr, perm, result) {
+  if (!arr.length && perm.length) {
+    result.push(perm);
+  } else {
+    for (let i = 0; i < arr.length; i++) {
+      let newArr = [...arr.slice(0, i), ...arr.slice(i + 1)];
+      let newPerm = [...perm, arr[i]];
+      helper(newArr, newPerm, result)
+    }
+  }
+}
