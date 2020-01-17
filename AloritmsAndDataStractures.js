@@ -1916,6 +1916,25 @@ function moveElementToEnd(arr, toMove) {
   }
   return arr
 }
+
 function swap(arr, i, j) {
   [arr[i], arr[j]] = [arr[j], arr[i]];
+}
+
+//Wright a fanction that inverts a given binary tree:
+function invertBinaryTree(tree) {
+  const queue = [tree];
+  while (queue.length) {
+    let current = queue.shift();
+    if (!current) continue
+    swapBST(current);
+    queue.push(current.left);
+    queue.push(current.right);
+  }
+}
+
+function swapBST(tree) {
+  const left = tree.left;
+  tree.left = tree.right;
+  tree.right = left;
 }
