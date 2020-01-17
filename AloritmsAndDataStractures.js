@@ -1736,6 +1736,32 @@ function twoNumberSum(arr, targetSum) {
   return []
 }
 
+// Find the indexes of 3 values in the array which sum gives a targetSum:
+function threeNumberSum(array, targetSum) {
+  array.sort((a, b) => a - b);
+  let currentSum;
+  let result = [];
+
+  for (let i = 0; i < array.length - 2; i++) {
+    let left = i + 1;
+    let right = array.length - 1;
+    while (left < right) {
+      currentSum = array[i] + array[left] + array[right];
+      if (currentSum === targetSum) {
+        result.push([array[i], array[left], array[right]])
+        left++;
+        right--;
+      } else if (currentSum < targetSum) {
+        left++;
+      } else if (currentSum > targetSum) {
+        right--;
+      }
+    }
+
+  }
+  return result
+}
+
 // Write a function that returns the sum of the numbers in the array and, if the value of the array is another array multiply the sum of that array values by depth of this array:
 function productSum(arr, depth = 1) {
   let sum = 0;
@@ -1826,4 +1852,70 @@ function helper(arr, perm, result) {
       helper(newArr, newPerm, result)
     }
   }
+}
+
+// Given two unsorted arrays find a pair of intergers which difference the closest to zero:
+function smallestDifference(arr1, arr2) {
+  arr1.sort((a, b) => a - b);
+  arr2.sort((a, b) => a - b)
+  let smallestPair = [];
+  let i = 0;
+  let j = 0;
+  let smallest = Infinity;
+  let current = Infinity;
+  while (i < arr1.length && j < arr2.length) {
+    let first = arr1[i];
+    let second = arr2[j]
+    if (first < second) {
+      current = second - first;
+      i++;
+    } else if (first > second) {
+      current = first - second;
+      j++;
+    } else {
+      return [arr1[i], arr2[j]]
+    }
+
+    if (smallest > current) {
+      smallestPair = [first, second];
+      smallest = current;
+    }
+  }
+  return smallestPair
+}
+
+
+//You are given a binary tree DS. Whire a function that checks if it's a valid BST:
+function validateBst(tree) {
+  const validateBSThelper = (node, min, max) => {
+    if (!node) return true;
+    if (node.value < min || node.value >= max) return false;
+    let left = helper(node.left, min, node.value);
+    let right = helper(node.right, node.value, max);
+    return left && right
+  }
+  return validateBSThelper(tree, -Infinity, Infinity)
+}
+
+
+//You're given an array of integers. Whrite a function that moves all the instances of that integer in the array  to the end of the array:
+function moveElementToEnd(arr, toMove) {
+  let left = 0;
+  let right = arr.length - 1;
+
+  while (left < right) {
+    if (arr[left] === toMove && arr[right] !== toMove) {
+      swap(arr, left, right);
+      right--;
+      left++;
+    } else if (left < right && arr[right] === toMove) {
+      right--;
+    } else {
+      left++;
+    }
+  }
+  return arr
+}
+function swap(arr, i, j) {
+  [arr[i], arr[j]] = [arr[j], arr[i]];
 }
