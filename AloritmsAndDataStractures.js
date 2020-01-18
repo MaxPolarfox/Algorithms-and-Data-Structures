@@ -1921,7 +1921,7 @@ function swap(arr, i, j) {
   [arr[i], arr[j]] = [arr[j], arr[i]];
 }
 
-//Wright a fanction that inverts a given binary tree:
+//Write a fanction that inverts a given binary tree:
 function invertBinaryTree(tree) {
   const queue = [tree];
   while (queue.length) {
@@ -1937,4 +1937,17 @@ function swapBST(tree) {
   const left = tree.left;
   tree.left = tree.right;
   tree.right = left;
+}
+
+
+// Write a function that takes in an array of positive integers and returns an integer that represents the maximum sum of non-adjacentelements in the array:
+function maxSubsetSumNoAdjacent(arr) {
+  let maxSums = [arr[0]];
+  if (!arr.length) return 0;
+  if (arr.length === 1) return arr[0];
+  maxSums[1] = Math.max(arr[0], arr[1]);
+  for (let i = 2; i < arr.length; i++) {
+    maxSums[i] = Math.max(maxSums[i - 1], maxSums[i - 2] + arr[i])
+  }
+  return maxSums[arr.length - 1]
 }
