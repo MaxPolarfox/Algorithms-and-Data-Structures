@@ -515,11 +515,11 @@ class SingleLinkedList {
 
     while (node.next) {
 
-      next = current.next;
+      next = node.next;
       node.next = prev;
 
-      prev = current.val
-      current = next;
+      prev = node.val
+      node = next;
     }
   }
 
@@ -1950,4 +1950,51 @@ function maxSubsetSumNoAdjacent(arr) {
     maxSums[i] = Math.max(maxSums[i - 1], maxSums[i - 2] + arr[i])
   }
   return maxSums[arr.length - 1]
+}
+
+
+// Given an an array of numbers, find the length of the longest possible subsequence that is increasing. This subsequence can "jump" over numbers in the array.
+function longestIncreasingSubsequence(arr) {
+  const sequences = new Array(arr.length).fill(null);
+  const lengths = new Array(arr.length).fill(1);
+  let maxInd = 0;
+
+  for (let i = 0; i < arr.length; i++) {
+    let current = arr[i];
+    for (let j = 0; j < i; j++) {
+      let other = arr[j]
+      if (other < current && lengths[j] + 1 >= lengths[i]) {
+        lengths[i] = lengths[j] + 1;
+        sequences[i] = j;
+      }
+    }
+    if (lengths[maxInd] <= lengths[i]) maxInd = i;
+  }
+  return buildSequence(arr, sequences, maxInd)
+}
+
+function buildSequence(arr, sequences, currInd) {
+  const sequence = [];
+  while (currInd !== null) {
+    sequence.unshift(arr[currInd]);
+    currInd = sequences[currInd];
+  }
+  return sequence
+}
+
+// Write a function that takes in a string made of brackets and other optional characters. The function showld return a boolean representing whether or not the string is balanced in regards to brackets:
+function balancedBrackets(str) {
+  const brackets = {
+    '{': '}',
+    '[': ']',
+    '(': ')'
+  }
+  const stack = [];
+
+  for (let char of str) {
+    let lastBracket = stack[stack.length - 1];
+    if (brackets[lastBracket] === char) stack.pop();
+    else stack.push(char);
+  }
+  return !stack.length
 }
